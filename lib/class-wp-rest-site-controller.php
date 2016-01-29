@@ -148,7 +148,7 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 					'description' => __( 'Timezone' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
-					'default'     => 'UTC+0',
+					'default'     => 'UTC',
 				),
 				'date_format' => array(
 					'description' => __( 'Date Format' ),
