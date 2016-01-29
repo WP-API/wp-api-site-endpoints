@@ -12,7 +12,6 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 	}
 
 	public function register_routes() {
-
 		register_rest_route( $this->namespace, '/' . $this->rest_base, array(
 			array(
 				'methods'  => WP_REST_Server::READABLE,
@@ -21,7 +20,6 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 			),
 			'schema' => array( $this, 'get_public_item_schema' ),
 		) );
-
 	}
 
 	public function get_items_permissions_check( $request ) {
@@ -33,19 +31,14 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 		$response = array();
 
 		foreach ( $options as $name => $args ) {
-			if ( ! isset( $mapping[ $name ] ) ) {
+			if ( ! $this->get_item_mapping( $name ) ) {
 				continue;
 			}
 
 			$response[ $name ] = $this->prepare_item_for_response( $name, $request );
 		}
 
-		$response = rest_ensure_response( $response );
-		$response->header( 'Location', rest_url( sprintf( '/%s/%s', $this->namespace, $this->rest_base ) ) );
-		$response->set_status( 302 );
-
-		return $response;
-
+		return rest_ensure_response( $response );
 	}
 
 	public function get_item_permissions_check( $request ) {
@@ -60,33 +53,23 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 
 	}
 
-	public function prepare_item_for_response( $item, $request ) {
-		$mapping  = array(
-			'title'                   => 'blogname',
-			'tagline'                 => 'blogdescription',
-			'wordpress_url'           => 'siteurl',
-			'url'                     => 'home',
-			'admin_email'             => 'admin_email',
-			'users_can_register'      => 'users_can_register',
-			'timezone_string'         => 'timezone_string',
-			'date_format'             => 'date_format',
-			'time_format'             => 'time_format',
-			'start_of_week'           => 'start_of_week',
-			'locale'                  => 'WPLANG',
-			'permalink_structure'     => 'permalink_structure',
-			'permalink_category_base' => 'category_base',
-			'permalink_tag_base'      => 'tag_base',
-		);
-
+	/**
+	 * Prepare a site setting for response
+	 *
+	 * @param  string           $option_name Item option name
+	 * @param  WP_REST_Request  $request
+	 * @return WP_REST_Response $response
+	 */
+	public function prepare_item_for_response( $option_name, $request ) {
 		$schema = $this->get_item_schema();
-		$item  = get_option( $mapping[ $item ] );
-		$item  = ( ! $item && isset( $schema['properties'][ $item ]['default'] ) ) ? $schema['properties'][ $item ]['default'] : $item;
+		$value  = get_option( $this->get_item_mapping( $option_name ) );
+		$value  = ( ! $value && isset( $schema['properties'][ $option_name ]['default'] ) ) ? $schema['properties'][ $option_name ]['default'] : $value;
 
-		if ( isset( $schema['properties'][ $item ]['type'] ) ) {
-			settype( $item, $schema['properties'][ $item ]['type'] );
+		if ( isset( $schema['properties'][ $option_name ]['type'] ) ) {
+			settype( $value, $schema['properties'][ $option_name ]['type'] );
 		}
 
-		return $item;
+		return $value;
 	}
 
 	/**
@@ -95,7 +78,6 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 	 * @return array
 	 */
 	public function get_item_schema() {
-
 		$schema = array(
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
 			'title'      => 'site',
@@ -192,7 +174,6 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 		);
 
 		return $this->add_additional_fields_schema( $schema );
-
 	}
 
 	/**
@@ -201,11 +182,45 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 	 * @return array
 	 */
 	public function get_collection_params() {
-
 		return array(
 			'context' => $this->get_context_param( array( 'default' => 'view' ) ),
 		);
+	}
 
+	/**
+	 * Return an array of option name mappings
+	 *
+	 * @return array
+	 */
+	public function get_item_mappings() {
+		return array(
+			'title'                   => 'blogname',
+			'tagline'                 => 'blogdescription',
+			'wordpress_url'           => 'siteurl',
+			'url'                     => 'home',
+			'admin_email'             => 'admin_email',
+			'users_can_register'      => 'users_can_register',
+			'timezone_string'         => 'timezone_string',
+			'date_format'             => 'date_format',
+			'time_format'             => 'time_format',
+			'start_of_week'           => 'start_of_week',
+			'locale'                  => 'WPLANG',
+			'permalink_structure'     => 'permalink_structure',
+			'permalink_category_base' => 'category_base',
+			'permalink_tag_base'      => 'tag_base',
+		);
+	}
+
+	/**
+	 * Return the mapped option name
+	 *
+	 * @param  string $option_name The API option name
+	 * @return string|bool         The mapped option name, or false on failure
+	 */
+	public function get_item_mapping( $key = '' ) {
+		$mappings = $this->get_item_mappings();
+
+		return isset( $mappings[ $key ] ) ? $mappings[ $key ] : false;
 	}
 
 }
