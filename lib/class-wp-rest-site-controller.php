@@ -11,6 +11,9 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 		$this->rest_base = 'site';
 	}
 
+	/**
+	 * Register the routes for the objects of the controller.
+	 */
 	public function register_routes() {
 		register_rest_route( $this->namespace, '/' . $this->rest_base, array(
 			array(
@@ -26,6 +29,12 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 
 	}
 
+	/**
+	 * Get a collection of site settings.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_Error|WP_REST_Response
+	 */
 	public function get_items( $request ) {
 		$options  = $this->get_endpoint_args_for_item_schema( WP_REST_Server::READABLE );
 		$response = array();
@@ -39,10 +48,6 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 		}
 
 		return rest_ensure_response( $response );
-	}
-
-	public function get_item_permissions_check( $request ) {
-
 	}
 
 	public function delete_item_permission_check( $request ) {
