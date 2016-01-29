@@ -133,6 +133,7 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 				'admin_email' => array(
 					'description' => __( 'Email Address' ),
 					'type'        => 'string',
+					'format'      => 'email',
 					'context'     => array( 'view', 'edit' ),
 					'arg_options' => array(
 						'sanitize_callback' => 'sanitize_email',
