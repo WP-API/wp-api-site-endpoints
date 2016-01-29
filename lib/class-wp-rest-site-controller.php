@@ -29,24 +29,6 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 	}
 
 	public function get_items( $request ) {
-
-		$mapping  = array(
-			'title'                   => 'blogname',
-			'tagline'                 => 'blogdescription',
-			'wordpress_url'           => 'siteurl',
-			'url'                     => 'home',
-			'admin_email'             => 'admin_email',
-			'users_can_register'      => 'users_can_register',
-//			'default_role'            => 'default_role',
-			'timezone_string'         => 'timezone_string',
-			'date_format'             => 'date_format',
-			'time_format'             => 'time_format',
-			'start_of_week'           => 'start_of_week',
-			'locale'                  => 'WPLANG',
-			'permalink_structure'     => 'permalink_structure',
-			'permalink_category_base' => 'category_base',
-			'permalink_tag_base'      => 'tag_base',
-		);
 		$options  = $this->get_endpoint_args_for_item_schema( WP_REST_Server::READABLE );
 		$response = array();
 
@@ -55,26 +37,18 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 				continue;
 			}
 
-			$schema = $this->get_item_schema();
-			$value  = get_option( $mapping[ $name ] );
-			$value  = ( ! $value && isset( $schema['properties'][ $name ]['default'] ) ) ? $schema['properties'][ $name ]['default'] : $value;
-
-			if ( isset( $schema['properties'][ $name ]['type'] ) ) {
-				settype( $value, $schema['properties'][ $name ]['type'] );
-			}
-
-			$response[ $name ] = $value;
+			$response[ $name ] = $this->prepare_item_for_response( $name, $request );
 		}
 
-		return rest_ensure_response( $response );
+		$response = rest_ensure_response( $response );
+		$response->header( 'Location', rest_url( sprintf( '/%s/%s', $this->namespace, $this->rest_base ) ) );
+		$response->set_status( 302 );
+
+		return $response;
 
 	}
 
 	public function get_item_permissions_check( $request ) {
-
-	}
-
-	public function get_item( $request ) {
 
 	}
 
@@ -87,7 +61,32 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 	}
 
 	public function prepare_item_for_response( $item, $request ) {
+		$mapping  = array(
+			'title'                   => 'blogname',
+			'tagline'                 => 'blogdescription',
+			'wordpress_url'           => 'siteurl',
+			'url'                     => 'home',
+			'admin_email'             => 'admin_email',
+			'users_can_register'      => 'users_can_register',
+			'timezone_string'         => 'timezone_string',
+			'date_format'             => 'date_format',
+			'time_format'             => 'time_format',
+			'start_of_week'           => 'start_of_week',
+			'locale'                  => 'WPLANG',
+			'permalink_structure'     => 'permalink_structure',
+			'permalink_category_base' => 'category_base',
+			'permalink_tag_base'      => 'tag_base',
+		);
 
+		$schema = $this->get_item_schema();
+		$item  = get_option( $mapping[ $item ] );
+		$item  = ( ! $item && isset( $schema['properties'][ $item ]['default'] ) ) ? $schema['properties'][ $item ]['default'] : $item;
+
+		if ( isset( $schema['properties'][ $item ]['type'] ) ) {
+			settype( $item, $schema['properties'][ $item ]['type'] );
+		}
+
+		return $item;
 	}
 
 	/**
