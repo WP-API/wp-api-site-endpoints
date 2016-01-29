@@ -214,13 +214,13 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 	/**
 	 * Return the mapped option name
 	 *
-	 * @param  string $option_name The API option name
-	 * @return string|bool         The mapped option name, or false on failure
+	 * @param  string $item The API option name
+	 * @return string|bool  The mapped option name, or false on failure
 	 */
-	public function get_item_mapping( $key = '' ) {
+	public function get_item_mapping( $item ) {
 		$mappings = $this->get_item_mappings();
 
-		return isset( $mappings[ $key ] ) ? $mappings[ $key ] : false;
+		return isset( $mappings[ $item ] ) ? $mappings[ $item ] : false;
 	}
 
 }
