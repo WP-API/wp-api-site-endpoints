@@ -11,5 +11,5 @@
 
 if ( class_exists( 'WP_REST_Controller' )
 	&& ! class_exists( 'WP_REST_Site_Controller' ) ) {
-	require_once dirname( __FILE__ ) . '/class-wp-rest-site-controller.php';
+	require_once dirname( __FILE__ ) . '/lib/class-wp-rest-site-controller.php';
 }
