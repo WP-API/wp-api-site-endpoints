@@ -31,18 +31,21 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 	public function get_items( $request ) {
 
 		$mapping  = array(
-			'title'              => 'blogname',
-			'tagline'            => 'blogdescription',
-			'wordpress_url'      => 'siteurl',
-			'url'                => 'home',
-			'admin_email'        => 'admin_email',
-			'users_can_register' => 'users_can_register',
-//			'default_role'       => 'default_role',
-			'timezone_string'    => 'timezone_string',
-			'date_format'        => 'date_format',
-			'time_format'        => 'time_format',
-			'start_of_week'      => 'start_of_week',
-			'locale'             => 'WPLANG',
+			'title'                   => 'blogname',
+			'tagline'                 => 'blogdescription',
+			'wordpress_url'           => 'siteurl',
+			'url'                     => 'home',
+			'admin_email'             => 'admin_email',
+			'users_can_register'      => 'users_can_register',
+//			'default_role'            => 'default_role',
+			'timezone_string'         => 'timezone_string',
+			'date_format'             => 'date_format',
+			'time_format'             => 'time_format',
+			'start_of_week'           => 'start_of_week',
+			'locale'                  => 'WPLANG',
+			'permalink_structure'     => 'permalink_structure',
+			'permalink_category_base' => 'category_base',
+			'permalink_tag_base'      => 'tag_base',
 		);
 		$options  = $this->get_endpoint_args_for_item_schema( WP_REST_Server::READABLE );
 		$response = array();
@@ -54,7 +57,7 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 
 			$schema = $this->get_item_schema();
 			$value  = get_option( $mapping[ $name ] );
-			$value  = ( ! $value && ! empty( $schema['properties'][ $name ]['default'] ) ) ? $schema['properties'][ $name ]['default'] : $value;
+			$value  = ( ! $value && isset( $schema['properties'][ $name ]['default'] ) ) ? $schema['properties'][ $name ]['default'] : $value;
 
 			if ( isset( $schema['properties'][ $name ]['type'] ) ) {
 				settype( $value, $schema['properties'][ $name ]['type'] );
@@ -169,6 +172,21 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 					'default'     => 'en_US',
+				),
+				'permalink_structure' => array(
+					'description' => __( 'Permalink Settings' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+				),
+				'permalink_category_base' => array(
+					'description' => __( 'Category base' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
+				),
+				'permalink_tag_base' => array(
+					'description' => __( 'Tag base' ),
+					'type'        => 'string',
+					'context'     => array( 'view', 'edit' ),
 				),
 			),
 		);
