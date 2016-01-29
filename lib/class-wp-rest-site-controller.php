@@ -56,9 +56,9 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 	/**
 	 * Prepare a site setting for response
 	 *
-	 * @param  string           $option_name Item option name
+	 * @param  string           $option_name The option name
 	 * @param  WP_REST_Request  $request
-	 * @return WP_REST_Response $response
+	 * @return string           $value       The option value
 	 */
 	public function prepare_item_for_response( $option_name, $request ) {
 		$schema = $this->get_item_schema();
@@ -214,13 +214,13 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 	/**
 	 * Return the mapped option name
 	 *
-	 * @param  string $item The API option name
-	 * @return string|bool  The mapped option name, or false on failure
+	 * @param  string $option_name The API option name
+	 * @return string|bool         The mapped option name, or false on failure
 	 */
-	public function get_item_mapping( $item ) {
+	public function get_item_mapping( $option_name ) {
 		$mappings = $this->get_item_mappings();
 
-		return isset( $mappings[ $item ] ) ? $mappings[ $item ] : false;
+		return isset( $mappings[ $option_name ] ) ? $mappings[ $option_name ] : false;
 	}
 
 }
