@@ -9,7 +9,16 @@
  * License: GPL2+
  */
 
-if ( class_exists( 'WP_REST_Controller' )
-	&& ! class_exists( 'WP_REST_Site_Controller' ) ) {
-	require_once dirname( __FILE__ ) . '/lib/class-wp-rest-site-controller.php';
+add_action( 'rest_api_init', 'create_site_routes', 0 );
+
+function create_site_routes() {
+
+	if ( class_exists( 'WP_REST_Controller' )
+		&& ! class_exists( 'WP_REST_Site_Controller' ) ) {
+			require_once dirname( __FILE__ ) . '/lib/class-wp-rest-site-controller.php';
+	}
+
+	$site_route = new WP_REST_Site_Controller();
+	$site_route->register_routes();
+
 }
