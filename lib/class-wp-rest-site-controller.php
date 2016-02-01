@@ -116,9 +116,23 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 					'format'      => 'uri',
 					'context'     => array( 'view', 'edit' ),
 				),
+				'admin_email' => array(
+					'description' => __( 'Email Address' ),
+					'type'        => 'string',
+					'format'      => 'email',
+					'context'     => array( 'view', 'edit' ),
+					'arg_options' => array(
+						'sanitize_callback' => 'sanitize_email',
+					),
+				),
 				'users_can_register' => array(
 					'description' => __( 'Membership' ),
 					'type'        => 'boolean',
+					'context'     => array( 'view', 'edit' ),
+				),
+				'default_role' => array(
+					'description' => __( 'New User Default Role' ),
+					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
 				'timezone_string' => array(
@@ -184,7 +198,7 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Return an array of option name mappings
+	 * Return an array of public option name mappings
 	 *
 	 * @return array
 	 */
@@ -207,6 +221,18 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 	}
 
 	/**
+	 * Return an array of private option name mappings
+	 *
+	 * @return array
+	 */
+	public function get_private_item_mappings() {
+		return array(
+			'admin_email'  => 'admin_email',
+			'default_role' => 'default_role',
+		);
+	}
+
+	/**
 	 * Return the mapped option name
 	 *
 	 * @param  string $option_name The API option name
@@ -214,6 +240,10 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 	 */
 	public function get_item_mapping( $option_name ) {
 		$mappings = $this->get_item_mappings();
+
+		if ( current_user_can( 'manage_options' ) ) {
+			$mappings = array_merge( $mappings, $this->get_private_item_mappings() );
+		}
 
 		return isset( $mappings[ $option_name ] ) ? $mappings[ $option_name ] : false;
 	}
