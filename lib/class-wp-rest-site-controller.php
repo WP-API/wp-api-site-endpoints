@@ -116,15 +116,6 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 					'format'      => 'uri',
 					'context'     => array( 'view', 'edit' ),
 				),
-				'admin_email' => array(
-					'description' => __( 'Email Address' ),
-					'type'        => 'string',
-					'format'      => 'email',
-					'context'     => array( 'view', 'edit' ),
-					'arg_options' => array(
-						'sanitize_callback' => 'sanitize_email',
-					),
-				),
 				'users_can_register' => array(
 					'description' => __( 'Membership' ),
 					'type'        => 'boolean',
@@ -203,7 +194,6 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 			'tagline'                 => 'blogdescription',
 			'wordpress_url'           => 'siteurl',
 			'url'                     => 'home',
-			'admin_email'             => 'admin_email',
 			'users_can_register'      => 'users_can_register',
 			'timezone_string'         => 'timezone_string',
 			'date_format'             => 'date_format',
