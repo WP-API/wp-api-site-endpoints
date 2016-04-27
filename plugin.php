@@ -5,7 +5,7 @@
  * Author: WP REST API Team
  * Author URI: http://wp-api.org
  * Version: 0.1.0
- * Plugin URI: https://github.com/WP-API/wp-api-site-endpoint
+ * Plugin URI: https://github.com/WP-API/wp-api-site-endpoints
  * License: GPL2+
  */
 
