@@ -59,6 +59,23 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 	}
 
 	/**
+	 * Get all the registered options for the Settings API
+	 *
+	 * @return array
+	 */
+	protected function get_registered_options() {
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+		register_setting( 'general', 'test', array(
+			'show_in_rest' => true,
+			'type' => 'string',
+			'description' => 'This is a test',
+		) );
+
+		return wp_list_filter( get_registered_settings(), array( 'show_in_rest' => true ) );
+	}
+
+	/**
 	 * Prepare a site setting for response
 	 *
 	 * @param  string           $option_name The option name
@@ -83,91 +100,31 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 	 * @return array
 	 */
 	public function get_item_schema() {
+
+		$options = $this->get_registered_options();
+
 		$schema = array(
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
 			'title'      => 'site',
 			'type'       => 'object',
-			'properties' => array(
-				'title' => array(
-					'description' => __( 'Site Title' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-					'arg_options' => array(
-						'sanitize_callback' => 'sanitize_text_field',
-					),
-				),
-				'tagline' => array(
-					'description' => __( 'Tagline' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-					'arg_options' => array(
-						'sanitize_callback' => 'sanitize_text_field',
-					),
-				),
-				'wordpress_url' => array(
-					'description' => __( 'WordPress Address (URL)' ),
-					'type'        => 'string',
-					'format'      => 'uri',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'url' => array(
-					'description' => __( 'Site Address (URL)' ),
-					'type'        => 'string',
-					'format'      => 'uri',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'users_can_register' => array(
-					'description' => __( 'Membership' ),
-					'type'        => 'boolean',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'timezone_string' => array(
-					'description' => __( 'Timezone' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-					'default'     => 'UTC',
-				),
-				'date_format' => array(
-					'description' => __( 'Date Format' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'time_format' => array(
-					'description' => __( 'Time Format' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'start_of_week' => array(
-					'description' => __( 'Week Starts On' ),
-					'type'        => 'integer',
-					'context'     => array( 'view', 'edit' ),
-					'arg_options' => array(
-						'sanitize_callback' => 'absint',
-					),
-				),
-				'locale' => array(
-					'description' => __( 'Site Language' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-					'default'     => 'en_US',
-				),
-				'permalink_structure' => array(
-					'description' => __( 'Permalink Settings' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'permalink_category_base' => array(
-					'description' => __( 'Category base' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-				'permalink_tag_base' => array(
-					'description' => __( 'Tag base' ),
-					'type'        => 'string',
-					'context'     => array( 'view', 'edit' ),
-				),
-			),
+			'properties' => array(),
 		);
+
+		foreach ( $options as $option_name => $option ) {
+			if ( $option['rest_base'] ) {
+				$option_name = $option['rest_base'];
+			}
+
+			$schema['properties'][ $option_name ] = array(
+				'title'      => $option_name,
+				'type'       => $option['type'],
+				'descrption' => $option['description'],
+			);
+
+			if ( isset( $option['rest_schema'] ) ) {
+				$schema['properties'][ $option_name ] = array_merge( $schema['properties'][ $option_name ], $option['rest_schema'] );
+			}
+		}
 
 		return $this->add_additional_fields_schema( $schema );
 	}
@@ -184,35 +141,12 @@ class WP_REST_Site_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Return an array of option name mappings
-	 *
-	 * @return array
-	 */
-	public function get_item_mappings() {
-		return array(
-			'title'                   => 'blogname',
-			'tagline'                 => 'blogdescription',
-			'wordpress_url'           => 'siteurl',
-			'url'                     => 'home',
-			'users_can_register'      => 'users_can_register',
-			'timezone_string'         => 'timezone_string',
-			'date_format'             => 'date_format',
-			'time_format'             => 'time_format',
-			'start_of_week'           => 'start_of_week',
-			'locale'                  => 'WPLANG',
-			'permalink_structure'     => 'permalink_structure',
-			'permalink_category_base' => 'category_base',
-			'permalink_tag_base'      => 'tag_base',
-		);
-	}
-
-	/**
 	 * Return the mapped option name
 	 *
 	 * @param  string $option_name The API option name
 	 * @return string|bool         The mapped option name, or false on failure
 	 */
-	public function get_item_mapping( $option_name ) {
+	protected function get_item_mapping( $option_name ) {
 		$mappings = $this->get_item_mappings();
 
 		return isset( $mappings[ $option_name ] ) ? $mappings[ $option_name ] : false;
