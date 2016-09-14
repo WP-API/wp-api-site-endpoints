@@ -9,16 +9,16 @@
  * License: GPL2+
  */
 
-add_action( 'rest_api_init', 'create_site_routes', 0 );
+add_action( 'rest_api_init', 'rest_create_settings_routes', 0 );
 
-function create_site_routes() {
-
+function rest_create_settings_routes() {
 	if ( class_exists( 'WP_REST_Controller' )
-		&& ! class_exists( 'WP_REST_Site_Controller' ) ) {
-			require_once dirname( __FILE__ ) . '/lib/class-wp-rest-site-controller.php';
+		&& ! class_exists( 'WP_REST_Settings_Controller' ) ) {
+			require_once dirname( __FILE__ ) . '/lib/class-wp-rest-settings-controller.php';
 	}
 
-	$site_route = new WP_REST_Site_Controller();
+
+	$site_route = new WP_REST_Settings_Controller();
 	$site_route->register_routes();
 
 }
