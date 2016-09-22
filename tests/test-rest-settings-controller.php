@@ -9,6 +9,10 @@
 class WP_Test_REST_Settings_Controller extends WP_Test_REST_Controller_Testcase {
 
 	public function setUp() {
+		global $wp_version;
+		if ( version_compare( $wp_version, '4.7-alpha', '<' ) ) {
+			return $this->markTestSkipped( 'WordPress version not supported.' );
+		}
 		parent::setUp();
 		$this->administrator = $this->factory->user->create( array(
 			'role' => 'administrator',
