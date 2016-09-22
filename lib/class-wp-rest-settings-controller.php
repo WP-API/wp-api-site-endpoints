@@ -6,8 +6,8 @@
 
 class WP_REST_Settings_Controller extends WP_REST_Controller {
 
-	protected $namespace = 'settings';
-	protected $rest_base = 'wp/v2';
+	protected $rest_base = 'settings';
+	protected $namespace = 'wp/v2';
 
 	/**
 	 * Register the routes for the objects of the controller.
