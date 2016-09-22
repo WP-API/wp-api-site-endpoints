@@ -34,101 +34,101 @@ function rest_register_settings() {
 	require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 	register_setting( 'general', 'blogname', array(
-		'show_in_rest'   => array(
-			'name'            => 'title',
+		'show_in_rest' => array(
+			'name' => 'title',
 		),
-		'type'           => 'string',
-		'description'    => __( 'Site title.' ),
+		'type'         => 'string',
+		'description'  => __( 'Site title.' ),
 	) );
 
 	register_setting( 'general', 'blogdescription', array(
-		'show_in_rest'   => array(
-			'name'            => 'description',
+		'show_in_rest' => array(
+			'name' => 'description',
 		),
-		'type'           => 'string',
-		'description'    => __( 'Site description.' ),
+		'type'         => 'string',
+		'description'  => __( 'Site description.' ),
 	) );
 
 	register_setting( 'general', 'siteurl', array(
-		'show_in_rest'   => array(
-			'name'            => 'url',
-			'schema'          => array(
-				'format'      => 'uri',
+		'show_in_rest' => array(
+			'name'    => 'url',
+			'schema'  => array(
+				'format' => 'uri',
 			),
 		),
-		'type'           => 'string',
-		'description'    => __( 'Site URL' ),
+		'type'         => 'string',
+		'description'  => __( 'Site URL' ),
 	) );
 
 	register_setting( 'general', 'admin_email', array(
-		'show_in_rest'   => array(
-			'name'            => 'email',
-			'schema'          => array(
-				'format'      => 'email',
+		'show_in_rest' => array(
+			'name'    => 'email',
+			'schema'  => array(
+				'format' => 'email',
 			),
 		),
-		'type'           => 'string',
-		'description'    => __( 'This address is used for admin purposes. If you change this we will send you an email at your new address to confirm it. The new address will not become active until confirmed.' ),
+		'type'         => 'string',
+		'description'  => __( 'This address is used for admin purposes. If you change this we will send you an email at your new address to confirm it. The new address will not become active until confirmed.' ),
 	) );
 
 	register_setting( 'general', 'timezone_string', array(
-		'show_in_rest'   => array(
-			'name'            => 'timezone',
+		'show_in_rest' => array(
+			'name' => 'timezone',
 		),
-		'type'           => 'string',
-		'description'    => __( 'A city in the same timezone as you.' ),
+		'type'         => 'string',
+		'description'  => __( 'A city in the same timezone as you.' ),
 	) );
 
 	register_setting( 'general', 'date_format', array(
-		'show_in_rest'   => true,
-		'type'           => 'string',
-		'description'    => __( 'A date format for all date strings.' ),
+		'show_in_rest' => true,
+		'type'         => 'string',
+		'description'  => __( 'A date format for all date strings.' ),
 	) );
 
 	register_setting( 'general', 'time_format', array(
-		'show_in_rest'   => true,
-		'type'           => 'string',
-		'description'    => __( 'A time format for all time strings.' ),
+		'show_in_rest' => true,
+		'type'         => 'string',
+		'description'  => __( 'A time format for all time strings.' ),
 	) );
 
 	register_setting( 'general', 'start_of_week', array(
-		'show_in_rest'   => true,
-		'type'           => 'number',
-		'description'    => __( 'A day number of the week that the week should start on.' ),
+		'show_in_rest' => true,
+		'type'         => 'number',
+		'description'  => __( 'A day number of the week that the week should start on.' ),
 	) );
 
 	register_setting( 'general', 'WPLANG', array(
-		'show_in_rest'   => array(
-			'name'       => 'language',
+		'show_in_rest' => array(
+			'name' => 'language',
 		),
-		'type'           => 'string',
-		'description'    => __( 'IETF "like" WordPress locale code.' ),
-		'default'        => 'en_US',
+		'type'         => 'string',
+		'description'  => __( 'WordPress locale code.' ),
+		'default'      => 'en_US',
 	) );
 
 	register_setting( 'writing', 'use_smilies', array(
-		'show_in_rest'   => true,
-		'type'           => 'boolean',
-		'description'    => __( 'Convert emoticons like :-) and :-P to graphics on display.' ),
-		'default'        => true,
+		'show_in_rest' => true,
+		'type'         => 'boolean',
+		'description'  => __( 'Convert emoticons like :-) and :-P to graphics on display.' ),
+		'default'      => true,
 	) );
 
 	register_setting( 'writing', 'default_category', array(
-		'show_in_rest'   => true,
-		'type'           => 'number',
-		'description'    => __( 'Default category.' ),
+		'show_in_rest' => true,
+		'type'         => 'number',
+		'description'  => __( 'Default category.' ),
 	) );
 
 	register_setting( 'writing', 'default_post_format', array(
-		'show_in_rest'   => true,
-		'type'           => 'string',
-		'description'    => __( 'Default post format.' ),
+		'show_in_rest' => true,
+		'type'         => 'string',
+		'description'  => __( 'Default post format.' ),
 	) );
 
 	register_setting( 'reading', 'posts_per_page', array(
-		'show_in_rest'   => true,
-		'type'           => 'number',
-		'description'    => __( 'Blog pages show at most.' ),
-		'default'        => 10,
+		'show_in_rest' => true,
+		'type'         => 'number',
+		'description'  => __( 'Blog pages show at most.' ),
+		'default'      => 10,
 	) );
 }
