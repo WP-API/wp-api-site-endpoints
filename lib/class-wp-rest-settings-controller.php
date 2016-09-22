@@ -56,20 +56,30 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 
 			// Because get_option() is lossy, we have to
 			// cast values to the type they are registered with.
-			switch ( $args['schema']['type'] ) {
-				case 'string':
-					$response[ $name ] = strval( $response[ $name ] );
-					break;
-				case 'number':
-					$response[ $name ] = floatval( $response[ $name ] );
-					break;
-				case 'boolean':
-					$response[ $name ] = (bool) $response[ $name ];
-					break;
-			}
+			$response[ $name ] = $this->cast_value_to_type( $response[ $name ], $args['schema']['type'] );
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Convert a value to a given schema type.
+	 *
+	 * @param  mixed  $value
+	 * @param  string $type  Type that the data should be converted to.
+	 * @return mixed
+	 */
+	protected function cast_value_to_type( $value, $type ) {
+		switch ( $type ) {
+			case 'string':
+				return strval( $value );
+			case 'number':
+				return floatval( $value );
+			case 'boolean':
+				return (bool) $value;
+			default:
+				return $value;
+		}
 	}
 
 	/**
@@ -117,7 +127,6 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 			}
 
 			$rest_args = array_merge( $rest_args, array(
-				'option_name' => $name,
 				'name'        => ! empty( $rest_args['name'] ) ? $rest_args['name'] : $name,
 				'schema'      => array(
 					'type'        => empty( $args['type'] ) ? null : $args['type'],
@@ -125,6 +134,8 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 					'default'     => isset( $args['default'] ) ? $args['default'] : null,
 				),
 			));
+
+			$rest_args['option_name'] = $name;
 
 			// Skip over settings that don't have a defined type in the schema.
 			if ( empty( $rest_args['schema']['type'] ) ) {
