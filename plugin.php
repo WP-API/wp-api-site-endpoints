@@ -19,8 +19,8 @@ function rest_create_settings_routes() {
 
 	rest_register_settings();
 
-	$site_route = new WP_REST_Settings_Controller();
-	$site_route->register_routes();
+	$settings_route = new WP_REST_Settings_Controller();
+	$settings_route->register_routes();
 }
 
 /**
