@@ -89,7 +89,7 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 	 * @return WP_Error|array
 	 */
 	public function update_item( $request ) {
-		$options  = $this->get_registered_options();
+		$options = $this->get_registered_options();
 		$params = $request->get_params();
 
 		foreach ( $options as $name => $args ) {
