@@ -93,14 +93,15 @@ class WP_REST_Settings_Controller extends WP_REST_Controller {
 		$params = $request->get_params();
 
 		foreach ( $options as $name => $args ) {
-			if ( array_key_exists( $name, $params ) ) {
-				// A null value means reset the option, which is essentially deleting it
-				// from the database and then relying on the default value.
-				if ( is_null( $request[ $name ] ) ) {
-					delete_option( $args['option_name'] );
-				} else {
-					update_option( $args['option_name'], $request[ $name ] );
-				}
+			if ( ! array_key_exists( $name, $params ) ) {
+				continue;
+			}
+			// A null value means reset the option, which is essentially deleting it
+			// from the database and then relying on the default value.
+			if ( is_null( $request[ $name ] ) ) {
+				delete_option( $args['option_name'] );
+			} else {
+				update_option( $args['option_name'], $request[ $name ] );
 			}
 		}
 
