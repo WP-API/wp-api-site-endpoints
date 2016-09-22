@@ -23,6 +23,13 @@ function rest_create_settings_routes() {
 	$site_route->register_routes();
 }
 
+/**
+ * Register the settings to be used in the REST API.
+ *
+ * This is required are WordPress Core does not internally register
+ * it's settings via `register_rest_setting()`. This should be removed
+ * once / if core starts to register settings internally.
+ */
 function rest_register_settings() {
 	require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
